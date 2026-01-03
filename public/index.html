@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Swing EA - Professional Trading Bot</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID_HERE"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1080px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 40px 40px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding:  8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88, #00d4ff, #7b61ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color:  transparent;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            color: #a8b2d1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin:  40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border:  1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform:  translateY(-10px);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom:  15px;
+        }
+
+        . feature-title {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        . feature-desc {
+            color:  #a8b2d1;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(123, 97, 255, 0.1));
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align:  center;
+        }
+
+        . stat-value {
+            font-size: 36px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #a8b2d1;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        . cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(123, 97, 255, 0.1));
+            border-radius: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .price {
+            font-size: 48px;
+            color: #00ff88;
+            font-weight: 900;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size:  18px;
+            font-weight:  bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin:  10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #0f0c29;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow:  0 15px 40px rgba(0, 255, 136, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height:  100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        . modal-content {
+            background:  linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius:  20px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        . close {
+            color: #a8b2d1;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin:  20px 0;
+        }
+
+        .form-group label {
+            display: block;
+            color: #a8b2d1;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .form-group input:: placeholder {
+            color: #a8b2d1;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .contact-item {
+            color: #a8b2d1;
+        }
+
+        .contact-item a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+
+        #paypal-button-container {
+            margin:  20px 0;
+        }
+
+        . loading {
+            display: none;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 255, 136, 0.2);
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #00ff88;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 32px; }
+            .subtitle { font-size: 18px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .btn { width: calc(100% - 20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="badge">🔥 INSTITUTIONAL GRADE TRADING BOT</div>
+            <h1 class="title">Adaptive Swing EA</h1>
+            <p class="subtitle">AI-Powered Pattern Recognition | Self-Learning System</p>
+        </div>
+
+        <div class="content">
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Adaptive Learning</div>
+                    <div class="feature-desc">Self-optimizing AI that learns from every trade</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-title">Dynamic Protection</div>
+                    <div class="feature-desc">3-stage SL system protects your capital</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">4 Chart Patterns</div>
+                    <div class="feature-desc">Auto-detected patterns with precision</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-title">Smart Scaling</div>
+                    <div class="feature-desc">2-5 positions per signal based on quality</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <div class="feature-title">All Markets</div>
+                    <div class="feature-desc">Forex, Gold, Crypto, Indices</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Risk Control</div>
+                    <div class="feature-desc">Daily/Weekly caps, adaptive sizing</div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value">55-65%</div>
+                    <div class="stat-label">Win Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">1: 3</div>
+                    <div class="stat-label">Avg R: R</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><8%</div>
+                    <div class="stat-label">Max DD</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">5-20%</div>
+                    <div class="stat-label">Monthly ROI</div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2 style="color: white; margin-bottom: 20px;">🚀 Start Trading Like The Institutions</h2>
+                <p style="color: #a8b2d1; margin:  20px 0;">
+                    ✅ Works with accounts as small as $100<br>
+                    ✅ Full automated trading<br>
+                    ✅ Instant bot delivery<br>
+                    ✅ Multiple license tiers available
+                </p>
+                <div class="price">$100 - $599</div>
+                <p style="color: #00ff88; font-size: 18px; margin:  10px 0;">Choose your plan below ⬇️</p>
+                <button class="btn btn-primary" onclick="openPaymentModal()">💳 Buy Now - Secure Payment</button>
+                <a href="https://wa.me/254799071779" class="btn" style="background: transparent; color: white; border: 2px solid #00ff88;">💬 WhatsApp Support</a>
+            </div>
+
+            <div class="footer">
+                <p style="color: #a8b2d1; margin:  20px 0;">
+                    🎯 Perfect for:  Swing Traders | Pattern Traders | Forex Investors
+                </p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        📱 <a href="https://wa.me/254799071779">WhatsApp:  +254 799 071 779</a>
+                    </div>
+                    <div class="contact-item">
+                        📸 <a href="https://instagram.com/HUNTER_MATO.FX">Instagram: @HUNTER_MATO.FX</a>
+                    </div>
+                </div>
+                <p style="color: #667eea; margin-top: 30px; font-size: 12px;">
+                    ⚠️ Trading involves risk.  Past performance doesn't guarantee future results. 
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: #00ff88; margin-bottom: 20px;">🔒 Secure Payment</h2>
+
+            <div class="form-group">
+                <label>📧 Your Email</label>
+                <input type="email" id="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>📦 Choose License Tier</label>
+                <select id="licenseType" onchange="updatePrice()">
+                    <option value="STANDARD" data-price="100">Standard - $100 (1 Year, 2 Accounts)</option>
+                    <option value="BASIC" data-price="29">Basic - $29 (30 Days, 1 Account)</option>
+                    <option value="PROFESSIONAL" data-price="249">Professional - $249 (2 Years, 5 Accounts)</option>
+                    <option value="LIFETIME" data-price="599">Lifetime - $599 (Forever, 10 Accounts) ⭐</option>
+                </select>
+            </div>
+
+            <div id="paypal-button-container"></div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="color: #a8b2d1; margin-top: 15px;">Processing payment...</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <p>✅ <strong>Payment Successful!</strong></p>
+                <p>Check your email for the download link and license key.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let currentPrice = 100;
+
+        function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'block';
+            initPayPalButtons();
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function updatePrice() {
+            const select = document.getElementById('licenseType');
+            currentPrice = parseInt(select.options[select.selectedIndex].getAttribute('data-price'));
+        }
+
+        function initPayPalButtons() {
+            // Clear previous buttons
+            const container = document. getElementById('paypal-button-container');
+            container.innerHTML = '';
+
+            paypal. Buttons({
+                createOrder: async (data, actions) => {
+                    const email = document.getElementById('email').value;
+                    const licenseType = document.getElementById('licenseType').value;
+
+                    if (! email || !email.includes('@')) {
+                        alert('Please enter a valid email');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_URL}/payments/create-order`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, amount: currentPrice, licenseType })
+                        });
+
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            return data.orderId;
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (error) {
+                        alert('Error creating order: ' + error.message);
+                    }
+                },
+
+                onApprove: async (data, actions) => {
+                    const email = document.getElementById('email').value;
+                    const licenseType = document.getElementById('licenseType').value;
+                    document.getElementById('loading').style.display = 'block';
+
+                    try {
+                        const response = await fetch(`${API_URL}/payments/capture-order`, {
+                            method: 'POST',
+                            headers: { 'Content-Type':  'application/json' },
+                            body: JSON.stringify({ orderId: data.orderID, email, licenseType })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('successMessage').style.display = 'block';
+                            
+                            setTimeout(() => {
+                                closeModal();
+                            }, 3000);
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    } catch (error) {
+                        alert('Error processing payment: ' + error.message);
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                },
+
+                onError: (err) => {
+                    alert('Payment error: ' + err);
+                }
+            }).render('#paypal-button-container');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event. target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+  </html>
